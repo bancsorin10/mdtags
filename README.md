@@ -1,9 +1,9 @@
 
 
-# mdtags
+# mdtags for vim
 
 + generate tags for `.md` files to be used similarly to obsidian note taking
-  app
+  app, in order to be used in vim
 
 + generates a tag for each file in the current directory, and for each header
   in each file
