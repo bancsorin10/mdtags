@@ -17,6 +17,11 @@ void parse_file(int tags, const char name[256]) {
     char *line;
     size_t ll;
 
+    // prefix filename info
+    // filenames can be ordered with numbers like 3005_scrap_file.md
+    // the numbering can be ignored thus making the tags easier to use
+    int pre_fn = 0;
+
     while (name[i++]) {
     }
     i--;
@@ -28,8 +33,18 @@ void parse_file(int tags, const char name[256]) {
     bzero(filename, 256);
     mempcpy(filename, name, i);
 
+    // check prefix
+    while (filename[pre_fn] && filename[pre_fn] >= '0' &&
+           filename[pre_fn] <= '9') {
+        ++pre_fn;
+    }
+    // skip the `_` if there was a prefix
+    if (pre_fn) {
+        ++pre_fn;
+    }
+
     // add tag to the file itself
-    dprintf(tags, "[[%s]]\t%s\t1\n", filename, name);
+    dprintf(tags, "[[%s]]\t%s\t1\n", filename + pre_fn, name);
 
 
     // add tags for headers
@@ -53,8 +68,8 @@ void parse_file(int tags, const char name[256]) {
             ++j;
         }
 
-        dprintf(tags, "[[%s#%s]]\t%s\t/^#\\{1,\\} %s/\n", filename, line + i,
-                name, line + i);
+        dprintf(tags, "[[%s#%s]]\t%s\t/^#\\{1,\\} %s/\n", filename + pre_fn,
+                line + i, name, line + i);
     }
 
     fclose(f);
